@@ -1,0 +1,8 @@
+"tdms"
+{
+	"base"			"base"
+	"title"			"TDMs"
+	"maps"			"^tdm_"
+	"category"		"pvp"
+	"menusystem"	"1"
+}
