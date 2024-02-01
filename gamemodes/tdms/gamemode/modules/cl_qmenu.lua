@@ -1,4 +1,4 @@
-local blacklist = {
+local drop_blacklist = {
 	"weapon_hands", -- ну и тд
 }
 
@@ -12,7 +12,7 @@ local function OpenQMenu() -- потом надо сделать дерма ме
 	qmenu:MakePopup()
 	qmenu:SetKeyboardInputEnabled(false)
 	--------------------------------
-	if wep:IsWeapon() and not table.HasValue(blacklist, class) then
+	if wep:IsWeapon() and not table.HasValue(drop_blacklist, class) then
 		local submenu1 = qmenu:AddOption("Drop Weapon", function() LocalPlayer():ConCommand("cw_dropweapon") end)
 		submenu1:SetIcon("icon16/gun.png")
 	end

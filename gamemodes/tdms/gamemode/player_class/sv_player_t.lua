@@ -1,6 +1,8 @@
 AddCSLuaFile()
 DEFINE_BASECLASS("player_base")
 local PLAYER = {}
+PLAYER.Models = {"models/player/arctic.mdl", "models/player/guerilla.mdl", "models/player/leet.mdl", "models/player/phoenix.mdl"}
+PLAYER.Color = false
 PLAYER.WalkSpeed = 150 -- How fast to move when not running
 PLAYER.RunSpeed = 265 -- How fast to move when running
 PLAYER.CrouchedWalkSpeed = 0.4 -- Multiply move speed by this when crouching

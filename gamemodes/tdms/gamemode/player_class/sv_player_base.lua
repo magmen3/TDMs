@@ -1,6 +1,10 @@
 AddCSLuaFile()
 DEFINE_BASECLASS("player_default")
 local PLAYER = {}
+-- можно писать тейблом и просто одной моделью
+PLAYER.Models = {"models/player/skeleton.mdl", "models/player/charple.mdl", "models/player/group01/male_03.mdl"}
+PLAYER.Color = Color(255, 255, 255) -- можно писать как колором так и вектором
+-- еще можно false поставить чтобы ставило цвет тимы игрока
 PLAYER.SlowWalkSpeed = 80 -- How fast to move when slow-walking (+WALK)
 PLAYER.WalkSpeed = 140 -- How fast to move when not running
 PLAYER.RunSpeed = 260 -- How fast to move when running
@@ -9,7 +13,7 @@ PLAYER.DuckSpeed = 0.5 -- How fast to go from not ducking, to ducking
 PLAYER.UnDuckSpeed = 0.5 -- How fast to go from ducking, to not ducking
 PLAYER.JumpPower = 180 -- How powerful our jump should be
 PLAYER.CanUseFlashlight = true -- Can we use the flashlight
-PLAYER.CanUseSuitZoom = false
+PLAYER.CanUseSuitZoom = false -- ставить на true только гордону фримену когда его добавим
 PLAYER.MaxHealth = 100 -- Max health we can have
 PLAYER.MaxArmor = 100 -- Max armor we can have
 PLAYER.StartHealth = 100 -- How much health we start with
@@ -30,7 +34,23 @@ function PLAYER:Spawn()
 end
 
 function PLAYER:SetModel()
-	BaseClass.SetModel(self)
+	--BaseClass.SetModel(self)
+	local ply = self.Player
+	if istable(self.Models) then
+		ply:SetModel(table.Random(self.Models))
+	else
+		ply:SetModel(self.Models)
+	end
+
+	if self.Color and self.Color ~= false then
+		if IsColor(self.Color) then
+			ply:SetPlayerColor(self.Color:ToVector())
+		elseif isvector(self.Color) then
+			ply:SetPlayerColor(self.Color)
+		end
+	else
+		ply:SetPlayerColor(team.GetColor(ply:Team()))
+	end
 end
 
 function PLAYER:Loadout()
