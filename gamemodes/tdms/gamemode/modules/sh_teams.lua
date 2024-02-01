@@ -23,19 +23,30 @@ function GM:ShowTeam(ply)
 end
 
 function GM:PlayerCanJoinTeam(ply, teamid)
-	local TimeBetweenSwitches = GAMEMODE.SecondsBetweenTeamSwitches or 10
-	if ply.LastTeamSwitch and RealTime() - ply.LastTeamSwitch < TimeBetweenSwitches then
-		--ply.LastTeamSwitch = ply.LastTeamSwitch + 1
-		ply:ChatPrint(Format("Please wait %i more seconds before trying to change team again", (TimeBetweenSwitches - (RealTime() - ply.LastTeamSwitch)) + 1))
-		return false
-	end
+    local TimeBetweenSwitches = GAMEMODE.SecondsBetweenTeamSwitches or 10
+    if ply.LastTeamSwitch and RealTime() - ply.LastTeamSwitch < TimeBetweenSwitches then
+        ply:ChatPrint(Format("Please wait %i more seconds before trying to change team again", (TimeBetweenSwitches - (RealTime() - ply.LastTeamSwitch)) + 1))
+        return false
+    end
 
-	if ply:Team() == teamid then
-		ply:ChatPrint("You're already on that team")
-		return false
-	end
-	return true
+    if ply:Team() == teamid then
+        ply:ChatPrint("You're already on that team")
+        return false
+    end
+
+    -- bomboklat
+    local teamCounts = { [TEAM_CT] = #team.GetPlayers(TEAM_CT), [TEAM_T] = #team.GetPlayers(TEAM_T) }
+    if teamid == TEAM_CT and teamCounts[TEAM_CT] > teamCounts[TEAM_T] then
+        ply:ChatPrint("You can't join the Counter-Terrorists because they have more players")
+        return false
+    elseif teamid == TEAM_T and teamCounts[TEAM_T] > teamCounts[TEAM_CT] then
+        ply:ChatPrint("You can't join the Terrorists because they have more players")
+        return false
+    end
+
+    return true
 end
+
 
 function GM:OnPlayerChangedTeam(ply, oldteam, newteam)
 	if newteam == TEAM_SPECTATOR then
