@@ -2,15 +2,31 @@ local roundNumber = 0
 local roundStart = 0
 local ROUND_TIME = 600
 local MAX_ROUNDS = 20
-//local specialRoundChance = 25 Когда нибудь
 
 function GM:RoundStart()
     roundNumber = roundNumber + 1
     roundStart = CurTime()
+
+
+    for _, ply in pairs(player.GetAll()) do
+        if ply:Team() ~= TEAM_SPECTATOR then
+            ply:Spawn()
+        end
+    end
 end
 
 function GM:RoundEnd(winningTeam)
-    self:RoundStart()
+    if roundNumber < MAX_ROUNDS then
+        self:RoundStart()
+    else
+        game.SetTimeScale(0.1) 
+        timer.Simple(5, function() game.SetTimeScale(1) end) 
+
+        net.Start("RoundEndMessage")
+        net.WriteInt(winningTeam, 8) 
+        net.Broadcast() 
+        timer.Simple(10, function() game.ConsoleCommand("changelevel " .. game.GetMap() .. "\n") end)
+    end
 end
 
 function GM:RoundThink()

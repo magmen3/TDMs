@@ -7,6 +7,8 @@ function GM:CreateTeams()
 	team.SetUp(TEAM_T, "Terrorists", Color(255, 150, 0))
 	team.SetSpawnPoint(TEAM_T, {"info_player_terrorist", "info_player_rebel", "info_player_deathmatch", "info_player_allies"})
 	------------------------------------------------------------
+	TEAM_SPECTATOR = 3
+	team.SetUp(TEAM_SPECTATOR, "Spectators", Color(255, 255, 255))
 	team.SetSpawnPoint(TEAM_SPECTATOR, "worldspawn")
 end
 
@@ -80,5 +82,7 @@ hook.Add("PlayerSpawn", "tdms-teams-plyspawn", function(ply, transition)
 		player_manager.SetPlayerClass(ply, "player_ct")
 	elseif ply:Team() == TEAM_T then
 		player_manager.SetPlayerClass(ply, "player_t")
+	elseif ply:Team() == TEAM_SPECTATOR then 
+	    player_manager.SetPlayerClass(ply, "player_spectator") 
 	end
 end)
