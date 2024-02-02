@@ -12,17 +12,34 @@ function GM:CreateTeams()
 	team.SetSpawnPoint(TEAM_SPECTATOR, "worldspawn")
 end
 
-function GM:ShowTeam(ply)
-	if not GAMEMODE.TeamBased then return end
-	local TimeBetweenSwitches = GAMEMODE.SecondsBetweenTeamSwitches or 10
-	if ply.LastTeamSwitch and RealTime() - ply.LastTeamSwitch < TimeBetweenSwitches then
-		--ply.LastTeamSwitch = ply.LastTeamSwitch + 1
-		ply:ChatPrint(Format("Please wait %i more seconds before trying to change team again", (TimeBetweenSwitches - (RealTime() - ply.LastTeamSwitch)) + 1))
-		return
-	end
+hook.Add("PlayerSpawn", "tdms-teams-plyspawn", function(ply, transition)
+    if ply:Team() ~= TEAM_SPECTATOR then
+        ply:Freeze(true)
+        ply:GodEnable()
+        timer.Simple(3, function()
+            if not IsValid(ply) then return end
+            ply:Freeze(false)
+            ply:GodDisable()
+        end)
+    end
 
-	ply:SendLua("GAMEMODE:ShowTeam()")
-end
+    local spawnPoints = {}
+
+    if ply:Team() == TEAM_CT then
+        spawnPoints = ents.FindByClass("info_player_counterterrorist")
+    elseif ply:Team() == TEAM_T then
+        spawnPoints = ents.FindByClass("info_player_terrorist")
+    else
+        spawnPoints = ents.FindByClass("info_player_deathmatch")
+    end
+
+    if #spawnPoints == 0 then
+        spawnPoints = ents.FindByClass("info_player_start")
+    end
+
+    local chosenSpawn = spawnPoints[math.random(1, #spawnPoints)]
+    ply:SetPos(chosenSpawn:GetPos())
+end)
 
 function GM:PlayerCanJoinTeam(ply, teamid)
     local TimeBetweenSwitches = GAMEMODE.SecondsBetweenTeamSwitches or 10
