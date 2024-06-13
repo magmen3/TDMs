@@ -83,6 +83,6 @@ hook.Add("PlayerSpawn", "tdms-teams-plyspawn", function(ply, transition)
 	elseif ply:Team() == TEAM_T then
 		player_manager.SetPlayerClass(ply, "player_t")
 	elseif ply:Team() == TEAM_SPECTATOR then 
-	    player_manager.SetPlayerClass(ply, "player_spectator") y
+	    player_manager.SetPlayerClass(ply, "player_spectator")
 	end
 end)
